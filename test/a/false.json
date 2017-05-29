@@ -1,0 +1,12 @@
+{
+    "users"[
+        {
+            "name":"Alice",
+            "sex":"female"
+        }
+		{
+            "name":"Bob",
+            "sex":"male
+        }
+    ]
+}

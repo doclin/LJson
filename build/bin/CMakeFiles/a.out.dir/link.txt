@@ -1,0 +1,1 @@
+/usr/bin/c++       CMakeFiles/a.out.dir/main.cpp.o CMakeFiles/a.out.dir/parser.cpp.o CMakeFiles/a.out.dir/lexical_analysis.cpp.o CMakeFiles/a.out.dir/syntactic_analysis.cpp.o CMakeFiles/a.out.dir/json.cpp.o  -o a.out -rdynamic 
