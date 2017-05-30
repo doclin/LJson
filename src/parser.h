@@ -32,6 +32,8 @@ private:
 	void syntactic_analyse();
 public:
 	Parser();
+	//Parser(const Parser& p);
+	//Parser& operator=(const Parser& p);
 	~Parser();
 	void parse(const char* doc);
 	const Json& get_json();

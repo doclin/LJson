@@ -8,6 +8,8 @@ using namespace std;
 
 void Parser::syntactic_analyse()
 {
+	production_stack.push(N_S);
+	
 	int stream_length = lexeme_stream.size();
 	if(stream_length == 0)
 		return;

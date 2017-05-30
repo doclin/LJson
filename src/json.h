@@ -3,6 +3,7 @@
 
 #include <stack>
 #include <cstring>
+#include <string>
 
 const int V_STRING 	= 0;
 const int V_NUMBER 	= 1;
@@ -97,13 +98,15 @@ private:
 	Value* current;
 	std::stack<Value*> point_stack;
 	char* json_text;
+	void destroy(Value* p);
+	void copy(Value* p);
+	void joint_string(std::string& tmp, int indent, Value* p);
 public:
 	Json();
 	Json(const Json& j);
 	Json& operator=(const Json& j);
 	~Json();
-	void destroy(Value* p);
-	void copy(Value* p);
+	void clear();
 	//
 	void new_array();
 	void new_obj();

@@ -1,11 +1,12 @@
 #include <iostream>
 #include <cstring>
+#include <string>
+#include <sstream>
 #include "json.h"
 
-Json::Json() : root(NULL), current(NULL), json_text(NULL)
-{
-	point_stack.push(root);
-}
+using namespace std;
+
+Json::Json() : root(NULL), current(NULL), json_text(NULL) {}
 
 Json::Json(const Json& j)
 {
@@ -16,13 +17,58 @@ Json::Json(const Json& j)
 		json_text = NULL;
 	}
 	else
+	{
+		root = current = NULL;
+		json_text = NULL;
+		copy(j.root);
+	}
+}
+
+Json& Json::operator=(const Json& j)
+{
+	if(root != NULL)
+	{
+		destroy(root);
+		delete root;
+		if(json_text != NULL)
+			delete [] json_text;
+	}
+
+	root = current = NULL;
+	json_text = NULL;
+	if(j.root != NULL)
 		copy(j.root);
 }
 
 void Json::copy(Value* p)
 {
-	if(current == NULL)
-		root = current;//
+	if(p->flag == V_OBJ)
+	{
+		new_obj();
+		for(int i=0; i<p->size; i++)
+		{
+			new_key(p->keys[i].key);
+			copy(p->keys[i].value);
+		}
+		end_obj();
+	}
+	else if(p->flag == V_ARRAY)
+	{
+		new_array();
+		for(int i=0; i<p->size; i++)
+			copy(&(p->values[i]));
+		end_array();
+	}
+	else if(p->flag == V_STRING)
+		new_string(p->string);
+	else if(p->flag == V_NUMBER)
+		new_number(p->number);
+	else if(p->flag == V_TRUE)
+		new_true();
+	else if(p->flag == V_FALSE)
+		new_false();
+	else if(p->flag == V_NULL)
+		new_null();
 }
 
 Json::~Json()
@@ -32,6 +78,8 @@ Json::~Json()
 		destroy(root);
 		delete root;
 	}
+	if(json_text != NULL)
+		delete [] json_text;
 }
 
 void Json::destroy(Value* p)
@@ -58,10 +106,23 @@ void Json::destroy(Value* p)
 		return;
 }
 
+void Json::clear()
+{
+	if(root != NULL)
+		destroy(root);
+	if(json_text != NULL)
+		delete [] json_text;
+	root = current = NULL;
+	json_text = NULL;
+}
+
 void Json::new_array()
 {
 	if(current == NULL)
+	{
 		root = current = new Value(V_ARRAY);
+		point_stack.push(current);
+	}
 	else if(current->flag == V_ARRAY)
 	{
 		if(current->size >= current->capacity)
@@ -99,7 +160,10 @@ void Json::new_array()
 void Json::new_obj()
 {
 	if(current == NULL)
+	{
 		root = current = new Value(V_OBJ);
+		point_stack.push(current);
+	}
 	else if(current->flag == V_ARRAY)
 	{
 		if(current->size >= current->capacity)
@@ -376,6 +440,74 @@ const Value& Json::operator[](int i) const
 
 char* Json::get_pretty_json()
 {
-	;
+	if(root == NULL)
+		return json_text;
+	if(json_text != NULL)
+		delete [] json_text;
+	string tmp;
+	joint_string(tmp, 0, root);
+	int string_length = tmp.size();
+	json_text = new char[string_length + 1];
+	tmp.copy(json_text, string_length);
+	json_text[string_length] = '\0';
+
+	return json_text;
+}
+
+void Json::joint_string(string& tmp, int indent, Value* p)
+{
+	if(p->flag == V_OBJ)
+	{
+		tmp.append("{\n");
+		indent++;
+		for(int i=0; i<p->size; i++)
+		{
+			tmp.append(indent, '\t');
+
+			tmp.append("\"");
+			tmp.append(p->keys[i].key);
+			tmp.append("\": ");
+
+			joint_string(tmp, indent, p->keys[i].value);
+			if(i != p->size - 1)
+				tmp.append(",");
+			tmp.append("\n");
+		}
+		tmp.append(indent-1, '\t');
+		tmp.append("}");
+	}
+	else if(p->flag == V_ARRAY)
+	{
+		tmp.append("[\n");
+		indent++;
+		for(int i=0; i<p->size; i++)
+		{
+			tmp.append(indent, '\t');
+			joint_string(tmp, indent, &(p->values[i]));
+			if(i != p->size - 1)
+				tmp.append(",");
+			tmp.append("\n");
+		}
+		tmp.append(indent-1, '\t');
+		tmp.append("]");
+	}
+	else if(p->flag == V_STRING)
+	{
+		tmp.append("\"");
+		tmp.append(p->string);
+		tmp.append("\"");
+	}
+	else if(p->flag == V_NUMBER)
+	{
+		ostringstream d_strings;
+		d_strings << p->number;
+		tmp.append(d_strings.str());
+	}
+	else if(p->flag == V_TRUE)
+		tmp.append("true");
+	else if(p->flag == V_FALSE)
+		tmp.append("false");
+	else if(p->flag == V_NULL)
+		tmp.append("null");
 }
 

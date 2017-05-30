@@ -75,7 +75,10 @@ int main()
 	{
 		parser.parse(s);
 		const Json& json = parser.get_json();
-		cout << json["users"][0]["name"].flag << endl;		
+		cout << json["users"][0]["name"].flag << endl;
+		Json j = parser.get_json();
+		cout << j["users"][0]["name"].flag << endl;
+		cout << j.get_pretty_json() << endl;
 	}
 	catch(int e)
 	{
