@@ -4,6 +4,7 @@
 #include <stack>
 #include <cstring>
 #include <string>
+#include "json_exception.h"
 
 const int V_STRING 	= 0;
 const int V_NUMBER 	= 1;
@@ -71,10 +72,10 @@ struct Value
 				if(0 == strcmp(s, keys[i].key))
 					return *(keys[i].value);
 			}
-			throw 4003;
+			throw 1001;
 		}
 		else
-			throw 4002;
+			throw 1002;
 	}
 	const Value& operator[](int i) const
 	{
@@ -83,10 +84,10 @@ struct Value
 			if(i < size)
 				return values[i];
 			else
-				throw 4004;
+				throw 1011;
 		}
 		else
-			throw 4002;
+			throw 1012;
 	}
 };
 

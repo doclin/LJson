@@ -192,10 +192,10 @@ void Json::new_obj()
 			current = current_key.value;
 		}
 		else
-			throw 2002;
+			throw 2012;
 	}
 	else
-		throw 2001;
+		throw 2011;
 }
 
 void Json::new_key(char* s)
@@ -226,7 +226,7 @@ void Json::new_key(char* s)
 		current->keys[current->size].key = new_s;
 	}
 	else
-		throw 2001;
+		throw 2021;
 }
 
 void Json::new_string(char* s)
@@ -281,10 +281,10 @@ void Json::new_string(char* s)
 			current->size++;
 		}
 		else
-			throw 2002;
+			throw 2032;
 	}
 	else
-		throw 2001;	
+		throw 2031;	
 }
 
 void Json::new_number(double n)
@@ -312,10 +312,10 @@ void Json::new_number(double n)
 			current->size++;
 		}
 		else
-			throw 2002;
+			throw 2042;
 	}
 	else
-		throw 2001;	
+		throw 2041;	
 }
 
 void Json::new_true()
@@ -342,10 +342,10 @@ void Json::new_true()
 			current->size++;
 		}
 		else
-			throw 2002;
+			throw 2052;
 	}
 	else
-		throw 2001;	
+		throw 2051;	
 }
 
 void Json::new_false()
@@ -372,10 +372,10 @@ void Json::new_false()
 			current->size++;
 		}
 		else
-			throw 2002;
+			throw 2062;
 	}
 	else
-		throw 2001;	
+		throw 2061;	
 }
 
 void Json::new_null()
@@ -402,16 +402,16 @@ void Json::new_null()
 			current->size++;
 		}
 		else
-			throw 2002;
+			throw 2072;
 	}
 	else
-		throw 2001;	
+		throw 2071;	
 }
 
 void Json::end_array()
 {
 	if(point_stack.empty())
-		throw 2003;
+		throw 2081;
 	current = point_stack.top();
 	point_stack.pop();
 }
@@ -419,7 +419,7 @@ void Json::end_array()
 void Json::end_obj()
 {
 	if(point_stack.empty())
-		throw 2003;
+		throw 2091;
 	current = point_stack.top();
 	point_stack.pop();
 }
@@ -427,14 +427,14 @@ void Json::end_obj()
 const Value& Json::operator[](const char* s) const
 {
 	if(root == NULL)
-		throw 4001;
+		throw 1020;
 	return (*root)[s];
 }
 
 const Value& Json::operator[](int i) const
 {
 	if(root == NULL)
-		throw 4001;
+		throw 1020;
 	return (*root)[i];
 }
 

@@ -89,7 +89,7 @@ void Parser::stringDFA()
 						or (document[doc_position]>='a' and document[doc_position]<='f')
 						or (document[doc_position]>='A' and document[doc_position]<='F')))
 					{
-						throw 1021;
+						throw 110;
 					}
 				}
 				//tmp.append(decode(string, doc_position-3, doc_position)); //-------------
@@ -127,7 +127,7 @@ void Parser::numberDFA()
 	{
 		doc_position++;
 		if(doc_position >= doc_length)
-			throw 402;
+			throw 102;
 		negative = true;
 	}
 
@@ -158,21 +158,21 @@ void Parser::numberDFA()
 		}
 	}
 	else
-		throw 401;
+		throw 120;
 
 	if(document[doc_position] == '.')
 	{
 		double digits = 0.1;
 		doc_position++;
 		if(doc_position >= doc_length)
-			throw 402;
+			throw 102;
 		if(char_type(document[doc_position]) == C_NUMBER)
 		{
 			part_frac = part_frac + digits * to_number(document[doc_position]);
 			digits *= 0.1;
 		}
 		else
-			throw 401;
+			throw 120;
 
 		while(true)
 		{
@@ -197,7 +197,7 @@ void Parser::numberDFA()
 		bool exp_negative = false;
 		doc_position++;
 		if(doc_position >= doc_length)
-			throw 402;
+			throw 102;
 
 		if(document[doc_position] == '+')
 			doc_position++;
@@ -207,12 +207,12 @@ void Parser::numberDFA()
 			doc_position++;
 		}
 		if(doc_position >= doc_length)
-			throw 402;
+			throw 102;
 
 		if(char_type(document[doc_position]) == C_NUMBER)
 			part_exp = 10 * part_exp + to_number(document[doc_position]);
 		else
-			throw 401;
+			throw 120;
 
 		while(true)
 		{
@@ -246,9 +246,9 @@ void Parser::trueDFA()
 	{
 		doc_position++;
 		if(doc_position >= doc_length)
-			throw 302;		
+			throw 102;		
 		if (document[doc_position] != s_true[i])
-			throw 301;
+			throw 130;
 	}
 	lexeme_stream.push_back(Lexeme(T_TRUE));
 }
@@ -260,9 +260,9 @@ void Parser::falseDFA()
 	{
 		doc_position++;
 		if(doc_position >= doc_length)
-			throw 302;		
+			throw 102;		
 		if (document[doc_position] != s_false[i])
-			throw 301;
+			throw 140;
 	}
 	lexeme_stream.push_back(Lexeme(T_FALSE));
 }
@@ -274,9 +274,9 @@ void Parser::nullDFA()
 	{
 		doc_position++;
 		if(doc_position >= doc_length)
-			throw 302;		
+			throw 102;		
 		if (document[doc_position] != s_null[i])
-			throw 301;
+			throw 150;
 	}
 	lexeme_stream.push_back(Lexeme(T_NULL));
 }

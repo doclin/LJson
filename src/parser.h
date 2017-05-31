@@ -5,6 +5,7 @@
 #include <stack>
 #include "json.h"
 #include "utility.h"
+#include "json_exception.h"
 
 class Parser
 {

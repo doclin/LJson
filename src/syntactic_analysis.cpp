@@ -20,7 +20,7 @@ void Parser::syntactic_analyse()
 		if(i >= stream_length)
 			break;
 		if(production_stack.empty())
-			throw 1002;
+			throw 203;
 
 		int word = production_stack.top();
 		if(word >= TERMINAL)
@@ -29,7 +29,7 @@ void Parser::syntactic_analyse()
 		int production = TABLE[word][next_word];
 
 		if(production == -1)
-			throw 1003;
+			throw 201;
 		else if(production < NON_TERMINAL)
 		{
 			production_stack.pop();
@@ -83,7 +83,7 @@ void Parser::syntactic_analyse()
 			production_stack.push(T_STRING);
 		}
 		else
-			throw 1009;
+			throw 1;
 		
 		if(production == N_ARRAY)
 			json.new_array();
@@ -118,10 +118,9 @@ void Parser::syntactic_analyse()
 				{
 					production_stack.pop();
 					i++;
-					//cout << production << endl;
 				}
 				else
-					throw 1004;
+					throw 201;
 			}
 			else
 				break;
@@ -129,5 +128,5 @@ void Parser::syntactic_analyse()
 	}
 
 	if(!production_stack.empty())
-		throw 1001;
+		throw 200;
 }

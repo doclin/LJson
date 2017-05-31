@@ -84,9 +84,11 @@ struct Lexeme
 		double lex_number;
 		char* lex_string;		
 	};
-	Lexeme(int t, double n) { lex_type = t; lex_number = n; }
-	Lexeme(int t, char* s) { lex_type = t; lex_string = s; }
-	Lexeme(int t) { lex_type = t; }
+	int line;
+	int position;
+	Lexeme(int t, double n, int l, int p) : lex_type(t), lex_number(n), line(l), position(p) {}
+	Lexeme(int t, char* s, int l, int p) : lex_type(t), lex_string(s), line(l), position(p) {}
+	Lexeme(int t, int l, int p) : lex_type(t), line(l), position(p) {}
 };
 
 #endif

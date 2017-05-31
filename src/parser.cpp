@@ -32,7 +32,7 @@ void Parser::parse(const char* doc)
 	doc_length = strlen(document);
 	doc_position = 0;
 	if(document == NULL)
-		throw 1;
+		return;
 	lexical_analyse();
 	syntactic_analyse();
 }
