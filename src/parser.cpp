@@ -4,7 +4,7 @@
 
 using namespace std;
 
-Parser::Parser() : document(NULL), doc_length(0), doc_position(0) {}
+Parser::Parser() : document(NULL), doc_length(0), doc_position(0), line_number(1), line_position(0) {}
 
 Parser::~Parser()
 {
@@ -31,6 +31,8 @@ void Parser::parse(const char* doc)
 	document = doc;
 	doc_length = strlen(document);
 	doc_position = 0;
+	line_number = 1;
+	line_position = 0;
 	if(document == NULL)
 		return;
 	lexical_analyse();

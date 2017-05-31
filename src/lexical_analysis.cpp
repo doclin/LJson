@@ -16,19 +16,25 @@ void Parser::lexical_analyse()
 		int current_type = char_type(document[doc_position]);
 
 		if(current_type == C_BLANK)
-			;
+		{
+			if(document[doc_position] == '\n')
+			{
+				line_number++;
+				line_position = doc_position;
+			}
+		}
 		else if(document[doc_position] == '{')
-			lexeme_stream.push_back(Lexeme(T_O_BRC));
+			lexeme_stream.push_back(Lexeme(T_O_BRC, line_number, doc_position - line_position));
 		else if(document[doc_position] == '}')
-			lexeme_stream.push_back(Lexeme(T_C_BRC));
+			lexeme_stream.push_back(Lexeme(T_C_BRC, line_number, doc_position - line_position));
 		else if(document[doc_position] == '[')
-			lexeme_stream.push_back(Lexeme(T_O_BKT));
+			lexeme_stream.push_back(Lexeme(T_O_BKT, line_number, doc_position - line_position));
 		else if(document[doc_position] == ']')
-			lexeme_stream.push_back(Lexeme(T_C_BKT));
+			lexeme_stream.push_back(Lexeme(T_C_BKT, line_number, doc_position - line_position));
 		else if(document[doc_position] == ',')
-			lexeme_stream.push_back(Lexeme(T_COMMA));
+			lexeme_stream.push_back(Lexeme(T_COMMA, line_number, doc_position - line_position));
 		else if(document[doc_position] == ':')
-			lexeme_stream.push_back(Lexeme(T_COLON));														
+			lexeme_stream.push_back(Lexeme(T_COLON, line_number, doc_position - line_position));														
 
 		else if(document[doc_position] == '\"')
 			stringDFA();
@@ -41,7 +47,7 @@ void Parser::lexical_analyse()
 		else if(document[doc_position] == 'n')
 			nullDFA();
 		else
-			throw 101;
+			throw ParseException(101, line_number, doc_position - line_position);
 
 		doc_position++;
 	}
@@ -61,7 +67,7 @@ void Parser::stringDFA()
 		{
 			doc_position++;	
 			if(doc_position >= doc_length)
-				throw 102;
+				throw ParseException(102, line_number, doc_position - line_position);
 			if(document[doc_position] == '\"')
 				tmp.push_back('\"');
 			else if(document[doc_position] == '\\')
@@ -84,12 +90,12 @@ void Parser::stringDFA()
 				{
 					doc_position++;
 					if(doc_position >= doc_length)
-						throw 102;
+						throw ParseException(102, line_number, doc_position - line_position);
 					if (!((document[doc_position]>='0' and document[doc_position]<='9') 
 						or (document[doc_position]>='a' and document[doc_position]<='f')
 						or (document[doc_position]>='A' and document[doc_position]<='F')))
 					{
-						throw 110;
+						throw ParseException(110, line_number, doc_position - line_position);
 					}
 				}
 				//tmp.append(decode(string, doc_position-3, doc_position)); //-------------
@@ -105,13 +111,13 @@ void Parser::stringDFA()
 		doc_position++;
 	}
 	if(end_position == -1)
-		throw 102;
+		throw ParseException(102, line_number, doc_position - line_position);
 
 	int string_length = tmp.size();
 	char* string_val = new char[string_length + 1];
 	tmp.copy(string_val, string_length);
 	string_val[string_length] = '\0';
-	lexeme_stream.push_back(Lexeme(T_STRING, string_val));
+	lexeme_stream.push_back(Lexeme(T_STRING, string_val, line_number, doc_position - line_position));
 }
 
 
@@ -127,7 +133,7 @@ void Parser::numberDFA()
 	{
 		doc_position++;
 		if(doc_position >= doc_length)
-			throw 102;
+			throw ParseException(102, line_number, doc_position - line_position);
 		negative = true;
 	}
 
@@ -136,7 +142,7 @@ void Parser::numberDFA()
 		doc_position++;
 		if(doc_position >= doc_length)
 		{
-			lexeme_stream.push_back(Lexeme(T_NUMBER, 0.0));
+			lexeme_stream.push_back(Lexeme(T_NUMBER, 0.0, line_number, doc_position - line_position));
 			return;
 		}
 	}
@@ -148,7 +154,7 @@ void Parser::numberDFA()
 		    doc_position++;
 		    if(doc_position >= doc_length)
 		    {
-			    lexeme_stream.push_back(Lexeme(T_NUMBER, assemble_number(negative, part_int)));
+			    lexeme_stream.push_back(Lexeme(T_NUMBER, assemble_number(negative, part_int), line_number, doc_position - line_position));
 			    return;
 		    }
 		    if(char_type(document[doc_position]) == C_NUMBER)
@@ -158,28 +164,28 @@ void Parser::numberDFA()
 		}
 	}
 	else
-		throw 120;
+		throw ParseException(120, line_number, doc_position - line_position);
 
 	if(document[doc_position] == '.')
 	{
 		double digits = 0.1;
 		doc_position++;
 		if(doc_position >= doc_length)
-			throw 102;
+			throw ParseException(102, line_number, doc_position - line_position);
 		if(char_type(document[doc_position]) == C_NUMBER)
 		{
 			part_frac = part_frac + digits * to_number(document[doc_position]);
 			digits *= 0.1;
 		}
 		else
-			throw 120;
+			throw ParseException(120, line_number, doc_position - line_position);
 
 		while(true)
 		{
 			doc_position++;
 			if(doc_position >= doc_length)
 			{
-				lexeme_stream.push_back(Lexeme(T_NUMBER, assemble_number(negative, part_int, part_frac)));
+				lexeme_stream.push_back(Lexeme(T_NUMBER, assemble_number(negative, part_int, part_frac), line_number, doc_position - line_position));
 				return;
 			}
 			if(char_type(document[doc_position]) == C_NUMBER)
@@ -197,7 +203,7 @@ void Parser::numberDFA()
 		bool exp_negative = false;
 		doc_position++;
 		if(doc_position >= doc_length)
-			throw 102;
+			throw ParseException(102, line_number, doc_position - line_position);
 
 		if(document[doc_position] == '+')
 			doc_position++;
@@ -207,12 +213,12 @@ void Parser::numberDFA()
 			doc_position++;
 		}
 		if(doc_position >= doc_length)
-			throw 102;
+			throw ParseException(102, line_number, doc_position - line_position);
 
 		if(char_type(document[doc_position]) == C_NUMBER)
 			part_exp = 10 * part_exp + to_number(document[doc_position]);
 		else
-			throw 120;
+			throw ParseException(120, line_number, doc_position - line_position);
 
 		while(true)
 		{
@@ -221,7 +227,7 @@ void Parser::numberDFA()
 			{
 				if(exp_negative)
 					part_exp *= -1;
-				lexeme_stream.push_back(Lexeme(T_NUMBER, assemble_number(negative, part_int, part_frac, part_exp)));
+				lexeme_stream.push_back(Lexeme(T_NUMBER, assemble_number(negative, part_int, part_frac, part_exp), line_number, doc_position - line_position));
 			}
 			if(char_type(document[doc_position]) == C_NUMBER)
 				part_exp = 10 * part_exp + to_number(document[doc_position]);
@@ -233,7 +239,7 @@ void Parser::numberDFA()
 			part_exp *= -1;
 	}
 
-	lexeme_stream.push_back(Lexeme(T_NUMBER, assemble_number(negative, part_int, part_frac, part_exp)));
+	lexeme_stream.push_back(Lexeme(T_NUMBER, assemble_number(negative, part_int, part_frac, part_exp), line_number, doc_position - line_position));
 	doc_position--;
 }
 
@@ -246,11 +252,11 @@ void Parser::trueDFA()
 	{
 		doc_position++;
 		if(doc_position >= doc_length)
-			throw 102;		
+			throw ParseException(102, line_number, doc_position - line_position);		
 		if (document[doc_position] != s_true[i])
-			throw 130;
+			throw ParseException(130, line_number, doc_position - line_position);
 	}
-	lexeme_stream.push_back(Lexeme(T_TRUE));
+	lexeme_stream.push_back(Lexeme(T_TRUE, line_number, doc_position - line_position));
 }
 
 void Parser::falseDFA()
@@ -260,11 +266,11 @@ void Parser::falseDFA()
 	{
 		doc_position++;
 		if(doc_position >= doc_length)
-			throw 102;		
+			throw ParseException(102, line_number, doc_position - line_position);		
 		if (document[doc_position] != s_false[i])
-			throw 140;
+			throw ParseException(140, line_number, doc_position - line_position);
 	}
-	lexeme_stream.push_back(Lexeme(T_FALSE));
+	lexeme_stream.push_back(Lexeme(T_FALSE, line_number, doc_position - line_position));
 }
 
 void Parser::nullDFA()
@@ -274,11 +280,11 @@ void Parser::nullDFA()
 	{
 		doc_position++;
 		if(doc_position >= doc_length)
-			throw 102;		
+			throw ParseException(102, line_number, doc_position - line_position);		
 		if (document[doc_position] != s_null[i])
-			throw 150;
+			throw ParseException(150, line_number, doc_position - line_position);
 	}
-	lexeme_stream.push_back(Lexeme(T_NULL));
+	lexeme_stream.push_back(Lexeme(T_NULL, line_number, doc_position - line_position));
 }
 
 int Parser::to_number(const char ch)

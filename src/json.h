@@ -72,10 +72,10 @@ struct Value
 				if(0 == strcmp(s, keys[i].key))
 					return *(keys[i].value);
 			}
-			throw 1001;
+			throw JsonException(1001);
 		}
 		else
-			throw 1002;
+			throw JsonException(1002);
 	}
 	const Value& operator[](int i) const
 	{
@@ -84,10 +84,10 @@ struct Value
 			if(i < size)
 				return values[i];
 			else
-				throw 1011;
+				throw JsonException(1011);
 		}
 		else
-			throw 1012;
+			throw JsonException(1012);
 	}
 };
 
@@ -111,8 +111,8 @@ public:
 	//
 	void new_array();
 	void new_obj();
-	void new_key(char* s);
-	void new_string(char* s);
+	void new_key(const char* s);
+	void new_string(const char* s);
 	void new_number(double n);
 	void new_true();
 	void new_false();

@@ -17,6 +17,8 @@ private:
 	const char* document;
 	int doc_length;
 	int doc_position;
+	int line_number;
+	int line_position;
 	//syntactic analysis variable
 	std::stack<int> production_stack;
 	//lexeme analysis function

@@ -20,7 +20,7 @@ void Parser::syntactic_analyse()
 		if(i >= stream_length)
 			break;
 		if(production_stack.empty())
-			throw 203;
+			throw ParseException(203, lexeme_stream[i].line, lexeme_stream[i].position);
 
 		int word = production_stack.top();
 		if(word >= TERMINAL)
@@ -29,7 +29,7 @@ void Parser::syntactic_analyse()
 		int production = TABLE[word][next_word];
 
 		if(production == -1)
-			throw 201;
+			throw ParseException(201, lexeme_stream[i].line, lexeme_stream[i].position);
 		else if(production < NON_TERMINAL)
 		{
 			production_stack.pop();
@@ -83,7 +83,7 @@ void Parser::syntactic_analyse()
 			production_stack.push(T_STRING);
 		}
 		else
-			throw 1;
+			throw ParseException(1, lexeme_stream[i].line, lexeme_stream[i].position);
 		
 		if(production == N_ARRAY)
 			json.new_array();
@@ -120,7 +120,7 @@ void Parser::syntactic_analyse()
 					i++;
 				}
 				else
-					throw 201;
+					throw ParseException(201, lexeme_stream[i].line, lexeme_stream[i].position);
 			}
 			else
 				break;
@@ -128,5 +128,5 @@ void Parser::syntactic_analyse()
 	}
 
 	if(!production_stack.empty())
-		throw 200;
+		throw ParseException(200, lexeme_stream[i].line, lexeme_stream[i].position);
 }

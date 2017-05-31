@@ -151,10 +151,10 @@ void Json::new_array()
 			current = current_key.value;
 		}
 		else
-			throw 2002;
+			throw JsonException(2002);
 	}
 	else
-		throw 2001;
+		throw JsonException(2001);
 }
 
 void Json::new_obj()
@@ -192,13 +192,13 @@ void Json::new_obj()
 			current = current_key.value;
 		}
 		else
-			throw 2012;
+			throw JsonException(2012);
 	}
 	else
-		throw 2011;
+		throw JsonException(2011);
 }
 
-void Json::new_key(char* s)
+void Json::new_key(const char* s)
 {
 	if(current->flag == V_OBJ)
 	{
@@ -226,10 +226,10 @@ void Json::new_key(char* s)
 		current->keys[current->size].key = new_s;
 	}
 	else
-		throw 2021;
+		throw JsonException(2021);
 }
 
-void Json::new_string(char* s)
+void Json::new_string(const char* s)
 {
 	if(current->flag == V_ARRAY)
 	{
@@ -281,10 +281,10 @@ void Json::new_string(char* s)
 			current->size++;
 		}
 		else
-			throw 2032;
+			throw JsonException(2032);
 	}
 	else
-		throw 2031;	
+		throw JsonException(2031);	
 }
 
 void Json::new_number(double n)
@@ -312,10 +312,10 @@ void Json::new_number(double n)
 			current->size++;
 		}
 		else
-			throw 2042;
+			throw JsonException(2042);
 	}
 	else
-		throw 2041;	
+		throw JsonException(2041);	
 }
 
 void Json::new_true()
@@ -342,10 +342,10 @@ void Json::new_true()
 			current->size++;
 		}
 		else
-			throw 2052;
+			throw JsonException(2052);
 	}
 	else
-		throw 2051;	
+		throw JsonException(2051);	
 }
 
 void Json::new_false()
@@ -372,10 +372,10 @@ void Json::new_false()
 			current->size++;
 		}
 		else
-			throw 2062;
+			throw JsonException(2062);
 	}
 	else
-		throw 2061;	
+		throw JsonException(2061);	
 }
 
 void Json::new_null()
@@ -402,16 +402,16 @@ void Json::new_null()
 			current->size++;
 		}
 		else
-			throw 2072;
+			throw JsonException(2072);
 	}
 	else
-		throw 2071;	
+		throw JsonException(2071);	
 }
 
 void Json::end_array()
 {
 	if(point_stack.empty())
-		throw 2081;
+		throw JsonException(2081);
 	current = point_stack.top();
 	point_stack.pop();
 }
@@ -419,7 +419,7 @@ void Json::end_array()
 void Json::end_obj()
 {
 	if(point_stack.empty())
-		throw 2091;
+		throw JsonException(2091);
 	current = point_stack.top();
 	point_stack.pop();
 }
@@ -427,14 +427,14 @@ void Json::end_obj()
 const Value& Json::operator[](const char* s) const
 {
 	if(root == NULL)
-		throw 1020;
+		throw JsonException(1020);
 	return (*root)[s];
 }
 
 const Value& Json::operator[](int i) const
 {
 	if(root == NULL)
-		throw 1020;
+		throw JsonException(1020);
 	return (*root)[i];
 }
 
