@@ -85,6 +85,7 @@ void Parser::syntactic_analyse()
 		else
 			throw ParseException(1, lexeme_stream[i].line, lexeme_stream[i].position);
 		
+		//make json
 		if(production == N_ARRAY)
 			json.new_array();
 		else if(production == N_OBJ)

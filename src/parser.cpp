@@ -18,6 +18,7 @@ Parser::~Parser()
 
 void Parser::parse(const char* doc)
 {
+	//init
 	if(document != NULL)
 	{
 		json.clear();
@@ -35,6 +36,7 @@ void Parser::parse(const char* doc)
 	line_position = 0;
 	if(document == NULL)
 		return;
+	
 	lexical_analyse();
 	syntactic_analyse();
 }
