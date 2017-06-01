@@ -35,7 +35,7 @@ void Parser::syntactic_analyse()
 			production_stack.pop();
 			production_stack.push(production);
 		}
-		else if(production == E_CBKT or production == E_CBRC)
+		else if(production == E_CBKT || production == E_CBRC)
 			production_stack.pop();
 		else if(production == 10105)
 		{

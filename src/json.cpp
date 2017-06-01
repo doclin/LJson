@@ -38,6 +38,8 @@ Json& Json::operator=(const Json& j)
 	json_text = NULL;
 	if(j.root != NULL)
 		copy(j.root);
+
+	return *this;
 }
 
 void Json::copy(Value* p)
@@ -142,7 +144,7 @@ void Json::new_array()
 	else if(current->flag == V_OBJ)
 	{
 		Key& current_key = current->keys[current->size];
-		if(current->size < current->capacity and current_key.key != NULL and current_key.value == NULL)
+		if(current->size < current->capacity && current_key.key != NULL && current_key.value == NULL)
 		{
 			current_key.value = new Value(V_ARRAY);
 			current->size++;
@@ -183,7 +185,7 @@ void Json::new_obj()
 	else if(current->flag == V_OBJ)
 	{
 		Key& current_key = current->keys[current->size];
-		if(current->size < current->capacity and current_key.key != NULL and current_key.value == NULL)
+		if(current->size < current->capacity && current_key.key != NULL && current_key.value == NULL)
 		{
 			current_key.value = new Value(V_OBJ);
 			current->size++;
@@ -262,7 +264,7 @@ void Json::new_string(const char* s)
 	else if(current->flag == V_OBJ)
 	{
 		Key& current_key = current->keys[current->size];
-		if(current->size < current->capacity and current_key.key != NULL and current_key.value == NULL)
+		if(current->size < current->capacity && current_key.key != NULL && current_key.value == NULL)
 		{
 			char* new_s;
 			if(s != NULL)
@@ -306,7 +308,7 @@ void Json::new_number(double n)
 	else if(current->flag == V_OBJ)
 	{
 		Key& current_key = current->keys[current->size];
-		if(current->size < current->capacity and current_key.key != NULL and current_key.value == NULL)
+		if(current->size < current->capacity && current_key.key != NULL && current_key.value == NULL)
 		{
 			current_key.value = new Value(V_NUMBER, n);
 			current->size++;
@@ -336,7 +338,7 @@ void Json::new_true()
 	else if(current->flag == V_OBJ)
 	{
 		Key& current_key = current->keys[current->size];
-		if(current->size < current->capacity and current_key.key != NULL and current_key.value == NULL)
+		if(current->size < current->capacity && current_key.key != NULL && current_key.value == NULL)
 		{
 			current_key.value = new Value(V_TRUE);
 			current->size++;
@@ -366,7 +368,7 @@ void Json::new_false()
 	else if(current->flag == V_OBJ)
 	{
 		Key& current_key = current->keys[current->size];
-		if(current->size < current->capacity and current_key.key != NULL and current_key.value == NULL)
+		if(current->size < current->capacity && current_key.key != NULL && current_key.value == NULL)
 		{
 			current_key.value = new Value(V_FALSE);
 			current->size++;
@@ -396,7 +398,7 @@ void Json::new_null()
 	else if(current->flag == V_OBJ)
 	{
 		Key& current_key = current->keys[current->size];
-		if(current->size < current->capacity and current_key.key != NULL and current_key.value == NULL)
+		if(current->size < current->capacity && current_key.key != NULL && current_key.value == NULL)
 		{
 			current_key.value = new Value(V_NULL);
 			current->size++;

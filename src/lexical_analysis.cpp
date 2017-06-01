@@ -38,7 +38,7 @@ void Parser::lexical_analyse()
 
 		else if(document[doc_position] == '\"')
 			stringDFA();
-		else if(document[doc_position] == '-' or current_type == C_NUMBER)
+		else if(document[doc_position] == '-' || current_type == C_NUMBER)
 			numberDFA();
 		else if(document[doc_position] == 't')
 			trueDFA();
@@ -91,9 +91,9 @@ void Parser::stringDFA()
 					doc_position++;
 					if(doc_position >= doc_length)
 						throw ParseException(102, line_number, doc_position - line_position);
-					if (!((document[doc_position]>='0' and document[doc_position]<='9') 
-						or (document[doc_position]>='a' and document[doc_position]<='f')
-						or (document[doc_position]>='A' and document[doc_position]<='F')))
+					if (!((document[doc_position]>='0' && document[doc_position]<='9') 
+						|| (document[doc_position]>='a' && document[doc_position]<='f')
+						|| (document[doc_position]>='A' && document[doc_position]<='F')))
 					{
 						throw ParseException(110, line_number, doc_position - line_position);
 					}
@@ -198,7 +198,7 @@ void Parser::numberDFA()
 		}
 	}
 
-	if(document[doc_position] == 'e' or document[doc_position] == 'E')
+	if(document[doc_position] == 'e' || document[doc_position] == 'E')
 	{
 		bool exp_negative = false;
 		doc_position++;
@@ -307,15 +307,15 @@ int Parser::to_number(const char ch)
 
 int Parser::char_type(const char c)
 {
-	if(c>='a' and c<='z')
+	if(c>='a' && c<='z')
 		return C_LOWERCASE;
-	if(c>='A' and c<='Z')
+	if(c>='A' && c<='Z')
 		return C_CAPITAL;
-	if(c>='0' and c<='9')
+	if(c>='0' && c<='9')
 		return C_NUMBER;
-	if(c==' ' or c=='\t' or c=='\r' or c=='\n')
+	if(c==' ' || c=='\t' || c=='\r' || c=='\n')
 		return C_BLANK;
-	if(c=='{' or c=='}' or c=='[' or c==']' or c==',' or c==':')
+	if(c=='{' || c=='}' || c=='[' || c==']' || c==',' || c==':')
 		return C_CHARACTER;
 
 	return C_OTHER;
